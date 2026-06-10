@@ -8,18 +8,19 @@ import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.QuPathExtension;
 
 /**
- * QuPath extension entry point. Adds a "Simplify path (smooth)" command under
- * <i>Extensions &gt; Simplify path</i> that smooths the selected annotations'
- * outlines using Inkscape-style cubic Bézier fitting (or a spline alternative),
- * avoiding the harsh angles produced by QuPath's built-in vertex-removal simplifier.
+ * QuPath extension entry point. Adds a "Smooth annotations" command under
+ * <i>Extensions &gt; Smooth Annotation</i> that smooths and simplifies the selected
+ * annotations' outlines using Inkscape-style cubic Bézier fitting (or a spline
+ * alternative), avoiding the harsh angles produced by QuPath's built-in
+ * vertex-removal simplifier.
  */
 public class SimplifyPathExtension implements QuPathExtension {
 
     private static final Logger logger = LoggerFactory.getLogger(SimplifyPathExtension.class);
 
-    private static final String EXTENSION_NAME = "Simplify path";
+    private static final String EXTENSION_NAME = "Smooth Annotation";
     private static final String EXTENSION_DESCRIPTION =
-            "Smoothly simplify annotation outlines using Inkscape-style curve fitting.";
+            "Smooth and simplify annotation outlines using Inkscape-style curve fitting.";
     private static final Version EXTENSION_QUPATH_VERSION = Version.parse("v0.7.0");
 
     private boolean isInstalled = false;
@@ -33,7 +34,7 @@ public class SimplifyPathExtension implements QuPathExtension {
         isInstalled = true;
 
         var command = new SimplifyPathCommand(qupath);
-        MenuItem menuItem = new MenuItem("Simplify path (smooth)…");
+        MenuItem menuItem = new MenuItem("Smooth annotations…");
         menuItem.setOnAction(e -> command.run());
 
         var menu = qupath.getMenu("Extensions>" + EXTENSION_NAME, true);

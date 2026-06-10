@@ -8,11 +8,11 @@ plugins {
 }
 
 qupathExtension {
-    name = "qupath-extension-simplify-path"
+    name = "qupath-extension-smooth-annotation"
     group = "io.github.imagescientist"
     version = "0.1.0"
-    description = "Inkscape-style smooth path/ROI simplification for QuPath"
-    automaticModule = "io.github.imagescientist.simplifypath"
+    description = "Smooth and simplify annotation outlines in QuPath (Inkscape-style)"
+    automaticModule = "io.github.imagescientist.smoothannotation"
 }
 
 dependencies {

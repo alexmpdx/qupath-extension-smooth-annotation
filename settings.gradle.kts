@@ -17,4 +17,4 @@ plugins {
     id("io.github.qupath.qupath-extension-settings") version "0.2.1"
 }
 
-rootProject.name = "qupath-extension-simplify-path"
+rootProject.name = "qupath-extension-smooth-annotation"

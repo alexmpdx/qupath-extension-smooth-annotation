@@ -1,6 +1,7 @@
-# QuPath Simplify Path
+# QuPath Smooth Annotation
 
-An **Inkscape-style** annotation simplifier for [QuPath](https://qupath.github.io/).
+An **Inkscape-style** tool to smooth and simplify annotation outlines in
+[QuPath](https://qupath.github.io/).
 
 QuPath's built-in *Simplify shape* uses **Visvalingam vertex removal**: it deletes
 points and connects the survivors with **straight lines**, which is why simplified
@@ -50,7 +51,7 @@ colour. A **Reset** button restores all settings (and the preview colour) to def
 ## Usage
 
 1. Select one or more **annotations**.
-2. **Extensions → Simplify path → Simplify path (smooth)…**
+2. **Extensions → Smooth Annotation → Smooth annotations…**
 3. A **non-modal dialog** opens with a **live preview**: the proposed result is drawn
    in magenta (outline + node dots) on top of your untouched annotation, and updates
    as you change any parameter. A status line shows the running *before → after* point
