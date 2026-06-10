@@ -24,6 +24,13 @@ public final class BezierFit {
 
     private static final int MAX_ITERATIONS = 4;
 
+    /**
+     * Maximum control-handle length as a multiple of the span's arc length. Legitimate
+     * single-cubic fits keep handles well below 1×; values far above this indicate a
+     * near-singular (ballooning) solution, so we fall back to a straight heuristic.
+     */
+    private static final double MAX_HANDLE_RATIO = 4.0;
+
     private BezierFit() {}
 
     /**
@@ -142,11 +149,22 @@ public final class BezierFit {
         double alphaL = detC0C1 == 0 ? 0.0 : detXC1 / detC0C1;
         double alphaR = detC0C1 == 0 ? 0.0 : detC0X / detC0C1;
 
-        // If alpha is negative or implausibly small, fall back to the Wu/Barsky
-        // heuristic (handles 1/3 of the chord length along each tangent).
+        // Fall back to the Wu/Barsky heuristic (handles 1/3 of the chord along each
+        // tangent) when the least-squares solution is degenerate. Besides negative or
+        // implausibly small handles, we guard against handles that are far too LONG:
+        // a near-singular system (e.g. a nearly-straight span) can yield enormous
+        // alpha values, producing a curve that passes near the sample points yet
+        // balloons wildly between them. The cap is relative to the span's arc length
+        // (not the chord, which is ~0 for a closed loop) so smooth loops still fit.
+        double spanLength = 0;
+        for (int i = first; i < last; i++)
+            spanLength += d[i].dist(d[i + 1]);
         double segLength = p0.dist(p3);
-        double epsilon = 1.0e-6 * segLength;
-        if (alphaL < epsilon || alphaR < epsilon) {
+        double epsilon = 1.0e-6 * Math.max(segLength, 1.0e-9);
+        double maxHandle = spanLength * MAX_HANDLE_RATIO;
+        if (!Double.isFinite(alphaL) || !Double.isFinite(alphaR)
+                || alphaL < epsilon || alphaR < epsilon
+                || alphaL > maxHandle || alphaR > maxHandle) {
             return lineAsCubic(p0, p3, tHat1, tHat2);
         }
         return new Vec[] {

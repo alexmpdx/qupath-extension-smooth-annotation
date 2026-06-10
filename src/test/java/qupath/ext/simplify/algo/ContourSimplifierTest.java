@@ -91,6 +91,37 @@ class ContourSimplifierTest {
     }
 
     @Test
+    void openLineDoesNotOvershoot() {
+        // Regression: a near-collinear jittery polyline with a tight tolerance and no
+        // corner preservation used to make the Bézier fit produce huge control handles,
+        // ballooning points far off the line. The output must stay near the input bounds.
+        List<Vec> pts = new ArrayList<>();
+        for (int i = 0; i < 32; i++) {
+            double x = i * 4.0;
+            double y = 5 + Math.sin(i * 0.5) * 1.2 + ((i * 29) % 7 - 3) * 0.4; // small wiggle/noise
+            pts.add(new Vec(x, y));
+        }
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+        for (Vec p : pts) {
+            minX = Math.min(minX, p.x()); maxX = Math.max(maxX, p.x());
+            minY = Math.min(minY, p.y()); maxY = Math.max(maxY, p.y());
+        }
+        // Trigger conditions: tiny smoothing tolerance, corner preservation disabled.
+        var tight = new ContourSimplifier.Settings(
+                ContourSimplifier.Method.BEZIER, 0.05, 1.0, 180.0, 10.0, 3);
+        Contour out = ContourSimplifier.simplify(new Contour(pts, false), tight);
+
+        double margin = 5.0; // allow modest curve overshoot, but nothing wild
+        for (Vec p : out.points()) {
+            assertTrue(p.x() >= minX - margin && p.x() <= maxX + margin
+                            && p.y() >= minY - margin && p.y() <= maxY + margin,
+                    "Output point " + p + " ballooned outside input bounds "
+                            + "x[" + minX + "," + maxX + "] y[" + minY + "," + maxY + "]");
+        }
+    }
+
+    @Test
     void sharpCornersArePreserved() {
         // A square traced with extra points along each edge.
         List<Vec> corners = List.of(new Vec(0, 0), new Vec(100, 0), new Vec(100, 100), new Vec(0, 100));

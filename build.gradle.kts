@@ -10,7 +10,7 @@ plugins {
 qupathExtension {
     name = "qupath-extension-smooth-annotation"
     group = "io.github.imagescientist"
-    version = "0.1.0"
+    version = "0.1.1"
     description = "Smooth and simplify annotation outlines in QuPath (Inkscape-style)"
     automaticModule = "io.github.imagescientist.smoothannotation"
 }
