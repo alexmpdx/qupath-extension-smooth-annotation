@@ -94,3 +94,8 @@ src/main/java/qupath/ext/simplify/
     SplineSmoother.java        – Chaikin and Catmull–Rom smoothing
     ContourSimplifier.java     – corner detection, span splitting, method dispatch
 ```
+
+## Acknowledgments
+
+Developed by [alexmpdx](https://github.com/alexmpdx) in collaboration with
+**Claude** (Anthropic), which co-authored the implementation.
